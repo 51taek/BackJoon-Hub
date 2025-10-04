@@ -6,27 +6,25 @@ int vis[202];
 
 using namespace std;
 
+void dfs(int node, vector<vector<int>> &computers, vector<bool> &vis, int n){
+    vis[node] = true;
+    for(int i=0;i<n;i++){
+        if(vis[i] == true || computers[node][i] != 1) continue;
+        dfs(i, computers, vis, n);
+    }
+}
+
 int solution(int n, vector<vector<int>> computers) {
     int answer = 0;
+    vector<bool> vis(n, false);
     
-    for(int i=0;i<n;i++){
-        if(vis[i] == 1) continue;
-        
-        queue<int> q;
-        q.push(i);
-        vis[i] = 1;
-        
-        while(!q.empty()){
-            int cur = q.front(); q.pop();
-            
-            for(int j=0;j<n;j++){
-                if(computers[cur][j] != 1 || vis[j]) continue;
-                q.push(j);
-                vis[j] = 1;
-            }
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) {
+            dfs(i, computers, vis, n);
+            answer++;
         }
-        answer++;
     }
+    
     
     return answer;
 }
