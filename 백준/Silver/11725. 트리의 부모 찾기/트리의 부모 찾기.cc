@@ -5,11 +5,16 @@ vector<int> adj[100002];
 int n;
 int p[100002];
 
-void dfs(int cur){
-  for(int nxt: adj[cur]){
-    if(p[cur] == nxt) continue;
-    p[nxt] = cur;
-    dfs(nxt);
+void bfs(int cur){
+  queue<int> q;
+  q.push(cur);
+  while(!q.empty()){
+    int c = q.front(); q.pop();
+    for(int nxt: adj[c]){
+      if(p[nxt]) continue;
+      q.push(nxt);
+      p[nxt] = c;
+    }
   }
 }
 
@@ -27,7 +32,7 @@ int main(){
     adj[y].push_back(x);
   }
 
-  dfs(1);
+  bfs(1);
   
   for(int i=2;i<=n;i++){
     cout << p[i] << "\n";
