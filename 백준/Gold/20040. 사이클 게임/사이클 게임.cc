@@ -16,6 +16,8 @@ bool uni(int x, int y){
   int v = find(y);
 
   if(u == v) return false;
+  if(p[v] < p[u]) swap(u,v);
+  if(p[v] == p[u]) p[u]--;
   p[v] = u;
   return true;
 }
