@@ -1,15 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+int n, m, x;
+
+vector<pair<int,int>> adj1[1005];
+vector<pair<int,int>> adj2[1005];
+int d1[1005];
+int d2[1005];
+const int INF = 1e9+10;
+
 #define X first
 #define Y second
-
-int n, m, x;
-vector<pair<int,int>> adj[1005];
-int d[1005];
-int dx[1005];
-
-const int INF = 10e9+10;
 
 int main(){
   ios::sync_with_stdio(0);
@@ -19,54 +20,57 @@ int main(){
   cin >> n >> m >> x;
 
   for(int i=0;i<m;i++){
-    int a, b, cost;
-    cin >> a >> b >> cost;
-    adj[a].push_back({cost,b});
+    int u, v, cost;
+    cin >> u >> v >> cost;
+    adj1[u].push_back({cost,v});
+    adj2[v].push_back({cost,u});
   }
 
-  int ans = 0;
+  fill(d1,d1+1005,INF);
 
-  priority_queue< pair<int,int>,
-      vector<pair<int,int>>,
-      greater<pair<int,int>> > pq;
-  
-  fill(dx,dx+1005,INF);
+  priority_queue<pair<int,int>,
+    vector<pair<int,int>>,
+    greater<pair<int,int>> > pq;
 
-  dx[x] = 0;
+  d1[x] = 0;
   pq.push({0,x});
 
   while(!pq.empty()){
     auto cur = pq.top(); pq.pop();
-    if(dx[cur.Y] != cur.X) continue;
-    for(auto nxt: adj[cur.Y]){
-      if(dx[nxt.Y] <= dx[cur.Y] + nxt.X) continue;
-      dx[nxt.Y] = dx[cur.Y] + nxt.X;
-      pq.push({dx[nxt.Y], nxt.Y});
+
+    if(d1[cur.Y] != cur.X) continue;
+
+    for(auto nxt: adj1[cur.Y]){
+      if(d1[nxt.Y] <= d1[cur.Y] + nxt.X) continue;
+      d1[nxt.Y] = d1[cur.Y] + nxt.X;
+      pq.push({d1[nxt.Y],nxt.Y});
     }
   }
 
-  for(int i=1;i<=n;i++){
+  priority_queue<pair<int,int>,
+    vector<pair<int,int>>,
+    greater<pair<int,int>> > pq2;
 
-    priority_queue< pair<int,int>,
-      vector<pair<int,int>>,
-      greater<pair<int,int>> > pq;
+  fill(d2,d2+1005,INF);
 
-    fill(d,d+1005,INF);
+  d2[x] = 0;
+  pq2.push({0,x});
 
-    d[i] = 0;
-    pq.push({0,i});
-    while(!pq.empty()){
-      auto cur = pq.top(); pq.pop();
-      if(d[cur.Y] != cur.X) continue;
-      for(auto nxt: adj[cur.Y]){
-        if(d[nxt.Y] <= d[cur.Y] + nxt.X) continue;
-        d[nxt.Y] = d[cur.Y] + nxt.X;
-        pq.push({d[nxt.Y],nxt.Y});
-      }
+  while(!pq2.empty()){
+    auto cur = pq2.top(); pq2.pop();
+    if(d2[cur.Y] != cur.X) continue;
+
+    for(auto nxt: adj2[cur.Y]){
+      if(d2[nxt.Y] <= d2[cur.Y] + nxt.X) continue;
+      d2[nxt.Y] = d2[cur.Y] + nxt.X;
+      pq2.push({d2[nxt.Y], nxt.Y});
     }
-
-    ans = max(ans,d[x]+dx[i]);
     
+  }
+
+  int ans = 0;
+  for(int i=1;i<=n;i++){
+    ans = max(ans,d1[i] + d2[i]);
   }
 
   cout << ans;
