@@ -1,53 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int n, m;
+vector<pair<int,int>> home;
+vector<pair<int,int>> chicken;
 
-int board[55][55];
 
 #define X first
 #define Y second
 
+int n, m;
+
+int a[53][53];
 
 int main(){
   ios::sync_with_stdio(0);
-  cin.tie(0);
+  cin.tie();
   cout.tie(0);
 
-  cin >> n >> m;
+  cin >> n>> m;
 
-  vector<pair<int,int>> chicken;
-  vector<pair<int,int>> home;
-
-  for(int i=0;i<n;i++){
+  for(int i=0;i<n;i++)
     for(int j=0;j<n;j++){
-      cin >> board[i][j];
-      if(board[i][j] == 2) chicken.push_back({i,j});
-      if(board[i][j] == 1) home.push_back({i,j});
+      cin >> a[i][j];
+      if(a[i][j] == 1) home.push_back({i,j});
+      if(a[i][j] == 2) chicken.push_back({i,j});
     }
-  }
 
-  vector<int> brute (chicken.size(), 1);
+  vector<int> brute(chicken.size(), 1);
   fill(brute.begin(), brute.begin() + chicken.size() - m, 0);
-  int ans = INT_MAX;
-  
+  int mn = 1e9;
+
   do{
     int dist = 0;
     for(auto h: home){
-      
-      int tmp = INT_MAX;
+      int tmp = 1e9;
       for(int i=0;i<chicken.size();i++){
         if(brute[i] == 0) continue;
-        tmp = min(tmp, (abs(h.X - chicken[i].X) + abs(h.Y - chicken[i].Y)));
+        int d = abs(chicken[i].X - h.X) + abs(chicken[i].Y - h.Y);
+        tmp = min(tmp, d);
       }
-      
       dist += tmp;
     }
+
+    mn = min(mn, dist);
     
-    ans = min(ans, dist);
+  }while(next_permutation(brute.begin(), brute.end()));
 
-  } while(next_permutation(brute.begin(), brute.end()));
   
-  cout << ans;
-
+  cout << mn;
+  
 }
