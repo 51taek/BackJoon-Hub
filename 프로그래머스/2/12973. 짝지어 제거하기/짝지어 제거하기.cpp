@@ -1,0 +1,23 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(string s)
+{
+    if (s.size() % 2 != 0) return 0;
+
+    vector<char> stack;
+    stack.reserve(s.size());
+
+    for (char c : s) {
+        if (!stack.empty() && stack.back() == c) {
+            stack.pop_back();
+        } 
+        else {
+            stack.push_back(c);
+        }
+    }
+
+    return stack.empty() ? 1 : 0;
+}
